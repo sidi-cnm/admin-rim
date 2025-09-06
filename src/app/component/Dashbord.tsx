@@ -37,9 +37,24 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
+
+
         <nav className="flex-1 overflow-y-auto p-2 space-y-1">
           <Link
-            href="fr/users"
+            href="fr/"
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+              pathname?.startsWith("/annonces")
+                ? "bg-blue-700"
+                : "hover:bg-blue-600"
+            }`}
+          >
+            <span className="truncate">{t("nav.annonce")}</span>
+          </Link>
+
+
+
+          <Link
+            href="/users"
             className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
               pathname?.startsWith("/annonces")
                 ? "bg-blue-700"

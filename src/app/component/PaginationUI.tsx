@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useI18n } from "../../../locales/client";
+import { useI18n } from "../../locales/client";
 
 export default function PaginationUI(props: {
   totalPages: number;

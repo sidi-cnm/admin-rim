@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import Locale from "intl-locale-textinfo-polyfill";
 import "./globals.css";
-import Sidebar from "./component/Dashbord";
+import Sidebar from "../component/Dashbord";
 import { Providers } from "./lyout/providers";
 
 export const metadata: Metadata = {

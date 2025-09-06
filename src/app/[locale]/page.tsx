@@ -1,6 +1,6 @@
 // app/[locale]/page.tsx
 import { getDb } from "../../lib/mongodb";
-import AnnonceListUI from "../[locale]/component/AnnonceListUI";
+import AnnonceListUI from "../component/AnnonceListUI";
 import type { Filter } from "mongodb";
 
 // ---- Type qui correspond à la structure en base ----
