@@ -16,7 +16,7 @@ type User = {
 type Toast = { type: "success" | "error"; text: string } | null;
 
 export default function UserCard({ user }: { user: User }) {
-  const t = useI18n();
+  
 
   // 👇 états locaux pour mise à jour en direct
   const [active, setActive] = useState(user.isActive);
@@ -56,7 +56,7 @@ export default function UserCard({ user }: { user: User }) {
         setActive(!next);
         setVerified(!next);
         const data = await res.json().catch(() => ({}));
-        showError(data?.error ?? (t("common.error") || "Une erreur est survenue"));
+        showError(data?.error ?? ( "Une erreur est survenue"));
         return;
       }
 
@@ -67,14 +67,14 @@ export default function UserCard({ user }: { user: User }) {
 
       showSuccess(
         next
-          ? t("user.activated") || "Utilisateur activé avec succès"
-          : t("user.deactivated") || "Utilisateur désactivé avec succès"
+          ? "Utilisateur activé avec succès"
+          : "Utilisateur désactivé avec succès"
       );
     } catch {
       // ❌ rollback en cas d’erreur réseau
       setActive(!next);
       setVerified(!next);
-      showError(t("common.networkError") || "Erreur réseau, réessayez.");
+      showError("Erreur réseau, réessayez.");
     } finally {
       setLoading(false);
     }
@@ -100,30 +100,30 @@ export default function UserCard({ user }: { user: User }) {
       {/* Infos */}
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-gray-600 font-medium">{t("user.role")} :</span>
+          <span className="text-gray-600 font-medium">{"Role"} :</span>
           <span className="text-gray-900">{user.roleName}</span>
         </div>
 
         <div className="flex justify-between">
-          <span className="text-gray-600 font-medium">{t("user.status")} :</span>
+          <span className="text-gray-600 font-medium">{"Status"} :</span>
           {active ? (
             <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs font-medium">
-              {t("user.active")}
+              {"Active"}
             </span>
           ) : (
             <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-xs font-medium">
-              {t("user.inactive")}
+              {"Desactive"}
             </span>
           )}
         </div>
 
         {/* 👇 On affiche l'état local `verified` (et plus la prop) */}
         <div className="flex justify-between">
-          <span className="text-gray-600 font-medium">{t("user.emailVerified")} :</span>
+          <span className="text-gray-600 font-medium">{"Email vérifié"} :</span>
           {verified ? (
-            <span className="text-green-600 font-medium">{t("common.yes")}</span>
+            <span className="text-green-600 font-medium">{"Yes"}</span>
           ) : (
-            <span className="text-rose-600 font-medium">{t("common.no")}</span>
+            <span className="text-rose-600 font-medium">{"No"}</span>
           )}
         </div>
       </div>
@@ -138,10 +138,10 @@ export default function UserCard({ user }: { user: User }) {
           } disabled:opacity-50`}
         >
           {loading
-            ? t("common.loading") || "Chargement..."
+            ? "Chargement..."
             : active
-            ? t("user.deactivate") || "Désactiver"
-            : t("user.activate") || "Activer"}
+            ? "Désactiver"
+            : "Activer"}
         </button>
 
         <button
@@ -149,11 +149,11 @@ export default function UserCard({ user }: { user: User }) {
           onClick={() =>
             setToast({
               type: "error",
-              text: t("user.deleteConfirm") || "Suppression à venir…",
+              text: "Suppression à venir…",
             })
           }
         >
-          {t("common.delete") || "Supprimer"}
+          {"Supprimer"}
         </button>
       </div>
     </div>

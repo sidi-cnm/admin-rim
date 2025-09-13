@@ -31,7 +31,7 @@ export default function UsersListUI({
   initialEmail: string;
   initialActive: string;
 }) {
-  const t = useI18n();
+  
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -52,7 +52,7 @@ export default function UsersListUI({
       if (onlyActive) params.set("active", "true");
       else params.set("active", "all");
 
-      return `/${locale}/users?${params.toString()}`;
+      return `/users?${params.toString()}`;
     },
     [email, onlyActive, locale, searchParams]
   );
@@ -70,10 +70,10 @@ export default function UsersListUI({
 
   const subtitle = useMemo(() => {
     const parts: string[] = [];
-    if (email) parts.push(`${t("user.email")}: ${email}`);
-    if (onlyActive) parts.push(t("user.activeOnly") || "Actifs seulement");
+    if (email) parts.push(`Email: ${email}`);
+    if (onlyActive) parts.push("Actifs seulement");
     return parts.join(" • ");
-  }, [email, onlyActive, t]);
+  }, [email, onlyActive]);
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -81,10 +81,10 @@ export default function UsersListUI({
       <div className="flex flex-wrap items-center gap-3 bg-white border rounded-md p-3 shadow-sm">
         {/* Ajouter */}
         <a
-          href={`/${locale}/users/new`}
+          href={`/users/new`}
           className="px-3 py-2 rounded bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
         >
-          {t("user.add") || "Ajouter un utilisateur"}
+          { "Ajouter un utilisateur"}
         </a>
 
         {/* Email */}
@@ -92,7 +92,7 @@ export default function UsersListUI({
           type="text"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder={t("user.searchByEmail") || "Rechercher par email..."}
+          placeholder={"Rechercher par email..."}
           className="border rounded-md px-3 py-2 text-sm min-w-[220px] flex-1 text-black"
           onKeyDown={(e) => e.key === "Enter" && applyFilters()}
         />
@@ -106,7 +106,7 @@ export default function UsersListUI({
             onChange={(e) => setOnlyActive(e.target.checked)}
           />
           <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs font-medium">
-            {t("user.activeOnly") || "Actifs seulement"}
+            {"Actifs seulement"}
           </span>
         </label>
 
@@ -114,7 +114,7 @@ export default function UsersListUI({
           onClick={applyFilters}
           className="px-3 py-2 rounded bg-gray-900 text-white text-sm font-medium hover:bg-black/90"
         >
-          {t("common.filter") || "Filtrer"}
+          {"Filtrer"}
         </button>
 
         {/* Résumé compact */}
@@ -129,7 +129,7 @@ export default function UsersListUI({
           users.map((u) => <UserCard key={u.id} user={u} />)
         ) : (
           <div className="col-span-full text-center text-gray-500">
-            {t("user.noResults") || "Aucun utilisateur trouvé"}
+            {"Aucun utilisateur trouvé"}
           </div>
         )}
       </div>
@@ -141,20 +141,20 @@ export default function UsersListUI({
           disabled={currentPage === 1}
           className="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded disabled:opacity-50"
         >
-          {t("pagination.prev")}
+          {"Precedant"}
         </button>
         <button
           onClick={goNext}
           disabled={currentPage === totalPages}
           className="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded disabled:opacity-50"
         >
-          {t("pagination.next")}
+          {"Suivant"}
         </button>
         <div className="flex items-center bg-gray-100 ml-3 p-2 rounded-lg shadow-md">
           <span className="text-gray-700 font-semibold">
-            {t("pagination.currentPage")}{" "}
+            {"Page actuelle"}
             <span className="font-bold text-blue-600">{currentPage}</span>{" "}
-            {t("pagination.of")}{" "}
+            {"de"}
             <span className="font-bold text-blue-600">{totalPages}</span>
           </span>
         </div>

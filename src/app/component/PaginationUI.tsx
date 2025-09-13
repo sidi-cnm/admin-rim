@@ -10,7 +10,7 @@ export default function PaginationUI(props: {
 }) {
   const router = useRouter();
   const sp = useSearchParams();
-  const t = useI18n();
+  
 
   const pushWithParams = (page: number) => {
     const q = new URLSearchParams(sp.toString());
@@ -35,20 +35,20 @@ export default function PaginationUI(props: {
         disabled={props.currentPage === 1}
         className="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded disabled:opacity-50"
       >
-        {t("pagination.prev")}
+        Precedant
       </button>
       <button
         onClick={handleClickToNextPage}
         disabled={props.currentPage === props.totalPages}
         className="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded disabled:opacity-50"
       >
-        {t("pagination.next")}
+        Suivant
       </button>
       <div className="flex items-center bg-gray-100 ml-3 p-2 rounded-lg shadow-md">
         <span className="text-gray-700 font-semibold">
-          {t("pagination.currentPage")}{" "}
+          Page actuel
           <span className="font-bold text-blue-600">{props.currentPage}</span>{" "}
-          {t("pagination.of")}{" "}
+          de
           <span className="font-bold text-blue-600">{props.totalPages}</span>
         </span>
       </div>

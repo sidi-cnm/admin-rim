@@ -1,5 +1,5 @@
 // src/app/[locale]/users/new/page.tsx
-import NewUserForm from "../../../component/NewUserForm";
+import NewUserForm from "../../component/NewUserForm";
 
 export default function NewUserPage({
   params,

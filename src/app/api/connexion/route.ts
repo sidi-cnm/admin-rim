@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const db = await getDb();
 
     // 1️⃣ Chercher l'utilisateur actif
-    const user = await db.collection("users").findOne({ email, roleName:"admin" , isActive: true });
+    const user = await db.collection("users").findOne({ email, roleName:"admin"  });
     if (!user) {
       return NextResponse.json(
         { error: "Email ou mot de passe incorrect" },

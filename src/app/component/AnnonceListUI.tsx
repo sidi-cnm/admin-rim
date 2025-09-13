@@ -1,4 +1,3 @@
-// components/AnnonceListUI.tsx
 "use client";
 
 import { useMemo } from "react";
@@ -14,6 +13,7 @@ type Annonce = {
   isPublished: boolean;
   contact?: string;
   status?: "active" | "deleted";
+  createdAt: Date;
 };
 
 export default function AnnonceListUI({
@@ -30,6 +30,8 @@ export default function AnnonceListUI({
 
   const publishedParam = sp.get("published") ?? "all";
   const phoneParam = sp.get("phone") ?? "";
+  const startDateParam = sp.get("startDate") ?? "";
+  const endDateParam = sp.get("endDate") ?? "";
 
   const showPublished = publishedParam === "all" || publishedParam === "true";
   const showUnpublished = publishedParam === "all" || publishedParam === "false";
@@ -40,7 +42,9 @@ export default function AnnonceListUI({
       if (v === null || v === "") q.delete(k);
       else q.set(k, v);
     });
-    if (next.published !== undefined || next.phone !== undefined) q.set("page", "1");
+    if (next.published !== undefined || next.phone !== undefined || next.startDate !== undefined || next.endDate !== undefined) {
+      q.set("page", "1");
+    }
     router.push(`?${q.toString()}`);
   };
 
@@ -62,10 +66,16 @@ export default function AnnonceListUI({
     return annonces.filter((a) => {
       if (publishedParam === "true" && !a.isPublished) return false;
       if (publishedParam === "false" && a.isPublished) return false;
-      if (phoneParam.trim()) return (a.contact ?? "").includes(phoneParam.trim());
+      if (phoneParam.trim() && !(a.contact ?? "").includes(phoneParam.trim())) return false;
+      if (startDateParam && new Date(a.createdAt) < new Date(startDateParam)) return false;
+      if (endDateParam && new Date(a.createdAt) > new Date(endDateParam)) return false;
       return true;
     });
-  }, [annonces, publishedParam, phoneParam]);
+  }, [annonces, publishedParam, phoneParam, startDateParam, endDateParam]);
+
+  const handlAddAnnonce = () => {
+    router.push('/AddAnnonce');
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -73,6 +83,7 @@ export default function AnnonceListUI({
       <div className="flex flex-wrap items-center gap-4 bg-white border rounded-md p-3 shadow-sm">
         <span className="font-medium text-gray-800">Filtres :</span>
 
+        {/* Filtre Publié */}
         <label className="inline-flex items-center gap-2 text-sm">
           <input
             type="checkbox"
@@ -85,6 +96,7 @@ export default function AnnonceListUI({
           </span>
         </label>
 
+        {/* Filtre Non publié */}
         <label className="inline-flex items-center gap-2 text-sm">
           <input
             type="checkbox"
@@ -97,6 +109,7 @@ export default function AnnonceListUI({
           </span>
         </label>
 
+        {/* Recherche par téléphone */}
         <input
           type="text"
           defaultValue={phoneParam}
@@ -104,6 +117,29 @@ export default function AnnonceListUI({
           placeholder="Rechercher par téléphone..."
           className="border text-black rounded-md px-3 py-1 text-sm flex-1 min-w-[200px]"
         />
+
+        {/* Filtre par date */}
+        <input
+          type="date"
+          name="startDate"
+          onChange={(e) => setQuery({ startDate: e.target.value })}
+          defaultValue={startDateParam}
+          className="border text-black rounded-md px-3 py-1 text-sm"
+        />
+        <input
+          type="date"
+          name="endDate"
+          onChange={(e) => setQuery({ endDate: e.target.value })}
+          defaultValue={endDateParam}
+          className="border text-black rounded-md px-3 py-1 text-sm"
+        />
+
+        <button
+          onClick={handlAddAnnonce}
+          className="text-white bg-blue-700 rounded-md p-2 hover:bg-blue-600"
+        >
+          Ajouter une Annonce
+        </button>
       </div>
 
       {/* Liste */}

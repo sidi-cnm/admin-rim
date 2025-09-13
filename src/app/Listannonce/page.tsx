@@ -1,4 +1,3 @@
-// app/[locale]/page.tsx
 import { getDb } from "../../lib/mongodb";
 import AnnonceListUI from "../component/AnnonceListUI";
 import type { Filter } from "mongodb";
@@ -12,13 +11,15 @@ type DbAnnonce = {
   firstImagePath?: string;
   isPublished?: boolean;
   status?: "active" | "deleted";
+  isSponsored: boolean;
+  createdAt: Date;
 };
 
 // ---- Composant page ----
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: { page?: string; published?: string; phone?: string };
+  searchParams?: { page?: string; published?: string; phone?: string; startDate?: string; endDate?: string };
 }) {
   const page = Math.max(parseInt(searchParams?.page || "1", 10), 1);
   const perPage = 6;
@@ -26,12 +27,21 @@ export default async function Home({
   // Récupération des filtres depuis l’URL
   const publishedParam = (searchParams?.published ?? "all").toLowerCase();
   const phoneParam = (searchParams?.phone ?? "").trim();
+  const startDateParam = searchParams?.startDate ?? "";
+  const endDateParam = searchParams?.endDate ?? "";
 
-  // ---- Construire le filtre MongoDB (typage strict avec Filter<DbAnnonce>) ----
+  // ---- Construire le filtre MongoDB ----
   const query: Filter<DbAnnonce> = {};
   if (publishedParam === "true") query.isPublished = true;
   if (publishedParam === "false") query.isPublished = false;
   if (phoneParam) query.contact = { $regex: phoneParam, $options: "i" };
+
+  // ---- Filtre par date ----
+  if (startDateParam || endDateParam) {
+    query.createdAt = {};
+    if (startDateParam) query.createdAt.$gte = new Date(startDateParam);
+    if (endDateParam) query.createdAt.$lte = new Date(endDateParam);
+  }
 
   // ---- Connexion à MongoDB ----
   const db = await getDb();
@@ -54,8 +64,10 @@ export default async function Home({
       firstImagePath: 1,
       isPublished: 1,
       status: 1,
+      isSponsored: 1,
+      createdAt: 1,
     })
-    .toArray()) as DbAnnonce[]; // ✅ Cast propre ici
+    .toArray()) as DbAnnonce[];
 
   // ---- Transformation pour le front ----
   const annoncesFormatted = annonces.map((a) => ({
@@ -66,6 +78,8 @@ export default async function Home({
     firstImagePath: a.firstImagePath,
     isPublished: a.isPublished ?? false,
     status: a.status ?? "active",
+    isSponsored: a.isSponsored ?? false,
+    createdAt: a.createdAt,
   }));
 
   // ---- Rendu ----

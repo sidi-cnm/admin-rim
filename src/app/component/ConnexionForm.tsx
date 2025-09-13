@@ -8,7 +8,7 @@ import { toast, Toaster } from "react-hot-toast";
 
 export default function ConnexionForm({ lang = "ar" }) {
   const router = useRouter();
-  const t = useI18n();
+  
 
   const defaultEmail = "";
   //"user1@example.com";
@@ -54,18 +54,18 @@ export default function ConnexionForm({ lang = "ar" }) {
     const newErrors = { email: "", password: "" };
 
     if (!email) {
-      newErrors.email = t("connexion.emailRequired");
+      newErrors.email = "Email est Required";
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = t("connexion.emailInvalid");
+      newErrors.email = "Mail invalider";
       isValid = false;
     }
 
     if (!password) {
-      newErrors.password = t("connexion.passwordRequired");
+      newErrors.password = "Mot de pass requis";
       isValid = false;
     } else if (password.length < 6) {
-      newErrors.password = t("connexion.passwordShort");
+      newErrors.password = "Mot de pass est petit";
       isValid = false;
     }
 
@@ -100,7 +100,7 @@ export default function ConnexionForm({ lang = "ar" }) {
             color: "white",
           },
         });
-        router.push(`/${lang}`);
+        router.push(`/`);
         router.refresh();
       }
     } catch (error: any) {
@@ -134,7 +134,7 @@ export default function ConnexionForm({ lang = "ar" }) {
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <Toaster position="bottom-right" reverseOrder={false} />
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          {t("connexion.title")}
+          {"Connexion"}
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -142,7 +142,7 @@ export default function ConnexionForm({ lang = "ar" }) {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              {t("connexion.emailLabel")}
+              {"Email"}
             </label>
             <input
               type="email"
@@ -161,7 +161,7 @@ export default function ConnexionForm({ lang = "ar" }) {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              {t("connexion.passwordLabel")}
+              {"Password"}
             </label>
             <input
               type="password"
@@ -186,7 +186,7 @@ export default function ConnexionForm({ lang = "ar" }) {
               {isLoading ? (
                 <div className="loader"></div>
               ) : (
-                t("connexion.submitButton")
+                "Se connecter"
               )}
             </button>
             {submitStatus && (
@@ -201,7 +201,7 @@ export default function ConnexionForm({ lang = "ar" }) {
             onClick={handleNavigate}
             className="text-blue-600 font-medium cursor-pointer hover:text-blue-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded transition-colors duration-200"
           >
-            {t("connexion.registerLink")}
+            Regsiter
           </div>
           
           <div
@@ -209,7 +209,7 @@ export default function ConnexionForm({ lang = "ar" }) {
             onClick={handleNavigateToForgetPassword}
             className="text-blue-600 font-medium cursor-pointer hover:text-blue-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded transition-colors duration-200"
           >
-            {t("connexion.forgotLink")}
+            Oblie le mot de pass
           </div>
         </div>
 

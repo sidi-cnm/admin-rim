@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import Locale from "intl-locale-textinfo-polyfill";
 import "./globals.css";
-import Sidebar from "../component/Dashbord";
+import Sidebar from "./component/Dashbord";
 import { Providers } from "./lyout/providers";
 
 export const metadata: Metadata = {
@@ -29,14 +29,14 @@ export default function RootLayout({
   }
 
   return (
-    <html lang={params.locale} dir={dir}>
+    <html  dir={dir}>
       <body className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-        <Providers locale={params.locale}>
+        
           <div className="flex">
             <Sidebar />
             <main className="flex-1 p-6 md:ml-64">{children}</main>
           </div>
-        </Providers>
+        
       </body>
     </html>
   );

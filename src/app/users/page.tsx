@@ -1,6 +1,6 @@
 // src/app/[locale]/users/page.tsx
-import { getDb } from "../../../lib/mongodb";
-import UsersListUI from "../../component/UsersListUI";
+import { getDb } from "../../lib/mongodb";
+import UsersListUI from "../component/UsersListUI";
 import type { ObjectId, Filter } from "mongodb";
 
 type DbUser = {

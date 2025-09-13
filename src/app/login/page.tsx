@@ -1,4 +1,4 @@
-import ConnexionForm from "../../component/ConnexionForm";
+import ConnexionForm from "../component/ConnexionForm";
 
 
 export default function(){
