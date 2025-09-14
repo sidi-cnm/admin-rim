@@ -10,7 +10,7 @@ const roleOptions: Option[] = [
   { label: "Client", value: "2" },
 ];
 
-export default function NewUserForm({ locale }: { locale: string }) {
+export default function NewUserForm() {
   const router = useRouter();
   const sp = useSearchParams();
 

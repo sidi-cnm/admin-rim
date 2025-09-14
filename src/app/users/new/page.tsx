@@ -2,12 +2,10 @@
 import { Suspense } from "react";
 import NewUserForm from "../../component/NewUserForm";
 
-export default function NewUserPage({
-  params,
-}: { params: { locale: string } }) {
+export default function NewUserPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <NewUserForm locale={params.locale} />
+      <NewUserForm />
     </Suspense>
   );
 }

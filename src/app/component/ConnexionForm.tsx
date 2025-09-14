@@ -37,7 +37,6 @@ export default function ConnexionForm({ lang = "ar" }) {
   // const [email, setEmail] = useState(defaultEmail);
   // const [password, setPassword] = useState(defaultPassword);
   const [errors, setErrors] = useState({ email: "", password: "" });
-  const [submitStatus, setSubmitStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNavigate = () => {
@@ -46,29 +45,6 @@ export default function ConnexionForm({ lang = "ar" }) {
  const handleNavigateToForgetPassword = () => {
   // fr/p/users/forgot-password
     router.push(`/${lang}/p/users/forgot-password`);
-  };
-  const validateForm = () => {
-    let isValid = true;
-    const newErrors = { email: "", password: "" };
-
-    if (!email) {
-      newErrors.email = "Email est Required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Mail invalider";
-      isValid = false;
-    }
-
-    if (!password) {
-      newErrors.password = "Mot de pass requis";
-      isValid = false;
-    } else if (password.length < 6) {
-      newErrors.password = "Mot de pass est petit";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -187,9 +163,6 @@ export default function ConnexionForm({ lang = "ar" }) {
                 "Se connecter"
               )}
             </button>
-            {submitStatus && (
-              <p className="mt-4 text-center text-sm">{submitStatus}</p>
-            )}
           </div>
         </form>
         

@@ -38,7 +38,7 @@ export default function AddAnnonceStep2({
         } catch {}
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, []);
 
   const addFiles = (files: File[]) => {

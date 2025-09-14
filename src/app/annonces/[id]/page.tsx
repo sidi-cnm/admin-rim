@@ -20,13 +20,6 @@ export default async function AnnonceDetail({
 
   const db = await getDb();
 
-  let contact = "Contact non trouvé";
-  if (userId) {
-    const contactDoc = await db.collection("contacts").findOne({
-      userId: ObjectId.isValid(userId) ? String(new ObjectId(userId)) : String(userId),
-    });
-    if (contactDoc?.contact) contact = String(contactDoc.contact);
-  }
 
   const annonceDbId = id;
 

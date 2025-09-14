@@ -185,6 +185,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         lieuId: lieuId || null,
         contact,
         moughataaId: moughataaId || null,
+        isSponsored:false,
         haveImage: false,
         directNegotiation,        // bool | null
         firstImagePath: '',
@@ -261,6 +262,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       haveImage: Boolean(data.haveImage ?? false),
       firstImagePath: data.firstImagePath ?? '',
       status: data.status,
+      isSponsored:false,
       isPublished: false,
       lieuId: data.lieuId ? String(data.lieuId) : null,
       moughataaId: data.moughataaId ? String(data.moughataaId) : null,
