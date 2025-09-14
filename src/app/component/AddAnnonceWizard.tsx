@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useMemo, useState } from "react";
-import AddAnnonceStep1 from "../component/AddAnnonce";
+import AddAnnonceStep1 from "./AddAnnonce";
 import AddAnnonceStep2 from "./AddAnnonceStep2";
 import AddAnnonceStep3 from "./AddAnnonceStep3";
 

@@ -1,12 +1,17 @@
 import { cookies } from "next/headers";
-import { jwtVerify } from 'jose' 
+import { jwtVerify } from 'jose'
 
- 
+interface UserData {
+  id: string;
+  email: string;
+  name: string;
+}
+
 export async function getUserFromCookies() {
 
   const cookieStore = await cookies();
   const jwtStore = cookieStore.get("jwt");
-  let userData: Record<string, any> | null = null;
+  let userData: UserData | null = null;
   if (jwtStore) {
     try {
       // Vérifier la validité du JWT
@@ -18,9 +23,9 @@ export async function getUserFromCookies() {
         //console.log(payload)
         // Récupérer les données essentielles de l'utilisateur
         userData = {
-          id: payload.id,
-          email: payload.email,
-          name: payload.roleName,
+          id: payload.id as string,
+          email: payload.email as string,
+          name: payload.roleName as string,
         };
         // Injecter dans les headers
 

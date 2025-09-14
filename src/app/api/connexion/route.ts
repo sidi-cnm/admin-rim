@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import { getDb } from "../../../lib/mongodb";
 
@@ -98,17 +97,19 @@ export async function POST(request: Request) {
     // 8️⃣ Retourner la réponse
     const { password: _, ...userWithoutPassword } = user;
 
+    console.log("__" , _);
     return NextResponse.json({
       message: "Connexion réussie",
       user: userWithoutPassword,
       sessionId: newSession.insertedId,
       token: token,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erreur connexion:", error);
+    const message = error instanceof Error ? error.message : "Erreur lors de la connexion";
     return NextResponse.json(
-      { error: error.message || "Erreur lors de la connexion" },
-      { status: error.message?.includes("incorrect") ? 401 : 500 }
+      { error: message },
+      { status: message.includes("incorrect") ? 401 : 500 }
     );
   }
 }

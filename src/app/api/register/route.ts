@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import { cookies } from "next/headers";
 import { getDb } from "../../../lib/mongodb";
 import { getUserFromCookies } from "@/utils/getUserFomCookies";
 
@@ -180,7 +179,7 @@ export async function POST(request: NextRequest) {
       typeof error === "object" &&
       error !== null &&
       ("code" in error || "codeName" in error) &&
-      // @ts-expect-error
+      // @ts-expect-error MongoDB error object may have code or codeName
       (error.code === 11000 || error.codeName === "DuplicateKey")
     ) {
       return NextResponse.json({ error: "Email already exists" }, { status: 400 });

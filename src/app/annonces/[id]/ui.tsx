@@ -3,7 +3,7 @@
 import { Annonce } from "../../../app/mytypes/types";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useEffect, useState } from "react";
-import EditForm from "../../component/EditForm/EditFrom";
+import EditForm from "../../component/EditForm/EditForm";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import MyAnnonceDetailsView from "../../component/MyAnnonceDetailsView";

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { Category, SubCategory, TypeAnnonce } from "../mytypes/types";
-import { Contact } from "lucide-react";
 
 type Position = "owner" | "broker" | "other";
 

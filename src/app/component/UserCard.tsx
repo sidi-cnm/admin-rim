@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useI18n } from "@/locales/client";
 
 type User = {
   id: string;

@@ -2,7 +2,6 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useI18n } from "@/locales/client";
 import { useCallback, useMemo, useState } from "react";
 import UserCard from "./UserCard";
 

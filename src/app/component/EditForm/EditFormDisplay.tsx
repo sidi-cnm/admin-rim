@@ -92,7 +92,6 @@ const EditFormDisplay: React.FC<EditFormDisplayProps> = ({
   handleSubmit,
   onClose,
   onEditImages,
-  lang,
 }) => {
   // supprimer isRTL si non utilisé
   // const isRTL = lang?.startsWith("ar");

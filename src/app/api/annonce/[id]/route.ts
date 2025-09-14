@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 import { getUserFromCookies } from "../../../../utils/getUserFomCookies";
 
 // GET /[locale]/api/my/annonces/:id
-export async function GET(_req: Request, ctx: any) {
+export async function GET(_req: Request, ctx: { params: { id: string } }) {
   try {
     const { id } = ctx.params;
     const db = await getDb();
@@ -30,7 +30,7 @@ export async function GET(_req: Request, ctx: any) {
       
     
     
-        const { _id, ...rest } = doc as any;
+        const { _id, ...rest } = doc! ;
     return NextResponse.json({ id: _id.toString(), ...rest }, { status: 200 });
   } catch (err) {
     console.error("GET annonce error:", err);
@@ -39,7 +39,7 @@ export async function GET(_req: Request, ctx: any) {
 }
 
 // PUT /[locale]/api/my/annonces/:id
-export async function PUT(req: Request, ctx: any) {
+export async function PUT(req: Request,  ctx: { params: { id: string } }) {
   try {
     const { id } = ctx.params;
     const db = await getDb();
@@ -85,7 +85,7 @@ export async function PUT(req: Request, ctx: any) {
         );
       }
     } catch (error) {
-      
+      console.error("Error in findOneAndUpdate:", error);
     }
      
 
@@ -93,7 +93,7 @@ export async function PUT(req: Request, ctx: any) {
       return NextResponse.json({ error: "Annonce introuvable ou non autorisée" }, { status: 404 });
     }
 
-    const { _id, ...rest } = value as any;
+    const { _id, ...rest } = value! ;
     return NextResponse.json({ id: _id.toString(), ...rest }, { status: 200 });
   } catch (err) {
     console.error("PUT annonce error:", err);
@@ -132,3 +132,22 @@ export async function DELETE(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

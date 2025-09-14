@@ -2,18 +2,16 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useI18n } from "../../locales/client";
-import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 
 export default function ConnexionForm({ lang = "ar" }) {
   const router = useRouter();
   
 
-  const defaultEmail = "";
-  //"user1@example.com";
-  const defaultPassword = "";
-  //"password123";
+  // const defaultEmail = "";
+  // //"user1@example.com";
+  // const defaultPassword = "";
+  // //"password123";
     const userForTest = {
     email:"ely@gmail.com",
     contact: "22334455",

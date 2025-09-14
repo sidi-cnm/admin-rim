@@ -30,7 +30,6 @@ const MyAnnonceDetailsView: React.FC<MyAnnonceDetailsViewProps> = ({
   handleDelte,
   handleEdit,
   isDeleting = false,
-  deletingText = "...",
 }) => {
   const d = annonce?.createdAt ? new Date(annonce.createdAt as any) : new Date();
   

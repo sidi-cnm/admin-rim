@@ -31,17 +31,17 @@ export default function PageAnnonceImages({ lang, annonceId }: PageProps) {
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ---- GET images ----
   useEffect(() => {
     const fetchImages = async () => {
       try {
         const res = await fetch(`/api/images/${annonceId}`, { cache: "no-store" });
         if (!res.ok) throw new Error("Erreur API");
+
+        // Typage explicite
         const data: FetchImagesResponse = await res.json();
 
-        const urls = Array.isArray(data.images)
-          ? data.images.map((img) => img.imagePath || "")
-          : [];
-
+        const urls: string[] = data.images.map((img: ImageItem) => img.imagePath || "");
         setImages(urls);
       } catch (err) {
         console.error("Erreur récupération images:", err);
@@ -54,37 +54,37 @@ export default function PageAnnonceImages({ lang, annonceId }: PageProps) {
     fetchImages();
   }, [lang, annonceId]);
 
+  // ---- POST / upload images ----
   const handleAddFiles = async (files: File[]) => {
-    if (!files?.length) return;
+    if (!files.length) return;
 
     const toastId = toast.loading("Uploading...");
     try {
       const fd = new FormData();
-      files.forEach((f) => fd.append("files", f));
-      fd.append("mainIndex", "0"); // première image principale
+      files.forEach((file: File) => fd.append("files", file));
+      fd.append("mainIndex", "0");
 
       const res = await fetch(`/api/images/${annonceId}`, {
         method: "POST",
         body: fd,
       });
 
-      const data: UploadImagesResponse = await res.json().catch(() => ({}));
+      const data: UploadImagesResponse = await res.json();
 
       if (!res.ok || data?.ok !== true) {
-        throw new Error(data?.error || "upload failed");
+        throw new Error(data?.error || "Upload failed");
       }
 
-      const newUrls: string[] = Array.isArray(data.images)
-        ? data.images.map((x) => x.url || "")
-        : [];
-
+      const newUrls: string[] = data.images?.map((img: ImageItem) => img.url || "") || [];
       setImages((prev) => [...newUrls, ...prev]);
       toast.success("Uploaded", { id: toastId });
-    } catch (e: any) {
-      toast.error(e?.message || "Upload échoué", { id: toastId });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Upload échoué";
+      toast.error(msg, { id: toastId });
     }
   };
 
+  // ---- DELETE image ----
   const handleRemove = async (idx: number) => {
     const url = images[idx];
     if (!url) return;
@@ -100,8 +100,9 @@ export default function PageAnnonceImages({ lang, annonceId }: PageProps) {
 
       setImages((prev) => prev.filter((_, i) => i !== idx));
       toast.success("Image supprimée", { id: loadingId });
-    } catch (err: any) {
-      toast.error(err?.message || "Suppression échouée", { id: loadingId });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Suppression échouée";
+      toast.error(msg, { id: loadingId });
     }
   };
 

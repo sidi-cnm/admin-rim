@@ -7,8 +7,7 @@ export function LottieAnimation() {
   return (
     <div className="flex justify-center items-center">
 
-      {/* @ts-ignore Headless UI types are not yet compatible with React 19 */}
-      <Lottie
+     <Lottie
         animationData={animationData}
         style={{ height: 150, width: 150 }}
       />

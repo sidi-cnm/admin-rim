@@ -14,7 +14,6 @@ type DbUser = {
 };
 
 export default async function UsersPage({
-  params,
   searchParams,
 }: {
   params: { locale: string };

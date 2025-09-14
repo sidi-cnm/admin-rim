@@ -17,22 +17,22 @@ function safeName(name: string) {
 }
 
 // ---- Contact user ----
-async function getUserContact(db: any, userIdStr: string): Promise<string | null> {
-  const verified = await db.collection("contacts").findOne(
-    { userId: userIdStr, isVerified: true, isActive: true },
-    { projection: { contact: 1 } }
-  );
-  if (verified?.contact) return String(verified.contact);
+// async function getUserContact(db: any, userIdStr: string): Promise<string | null> {
+//   const verified = await db.collection("contacts").findOne(
+//     { userId: userIdStr, isVerified: true, isActive: true },
+//     { projection: { contact: 1 } }
+//   );
+//   if (verified?.contact) return String(verified.contact);
 
-  const latest = await db.collection("contacts")
-    .find({ userId: userIdStr }, { projection: { contact: 1, createdAt: 1 } })
-    .sort({ createdAt: -1 })
-    .limit(1)
-    .next();
-  if (latest?.contact) return String(latest.contact);
+//   const latest = await db.collection("contacts")
+//     .find({ userId: userIdStr }, { projection: { contact: 1, createdAt: 1 } })
+//     .sort({ createdAt: -1 })
+//     .limit(1)
+//     .next();
+//   if (latest?.contact) return String(latest.contact);
 
-  return null;
-}
+//   return null;
+// }
 
 // ---- Upload + persistance DB ----
 async function uploadAnnonceImagesAndPersist(
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       const priceStr = form.get("price");
       const price    = priceStr != null && String(priceStr) !== "" ? Number(priceStr) : null;
-      const contact = form.get("contact")
+      const contact = form.get("contact") ? String(form.get("contact")) : null;
 
       const dnRaw = form.get("directNegotiation");
       let directNegotiation: boolean | null = null;
@@ -257,6 +257,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       title: data.title,
       description: data.description,
       price: typeof data.price === "number" ? data.price : null,
+      contact: data.contact ? String(data.contact) : null,
       haveImage: Boolean(data.haveImage ?? false),
       firstImagePath: data.firstImagePath ?? '',
       status: data.status,

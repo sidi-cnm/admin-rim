@@ -8,6 +8,10 @@ import { put } from "@vercel/blob";
 import { getDb } from "../../../../lib/mongodb";
 import { getUserFromCookies } from "../../../../utils/getUserFomCookies";
 
+
+
+type Params = { locale?: string; annonceId: string };
+
 const MAX_FILES = 8;
 const MAX_SIZE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
@@ -29,7 +33,7 @@ type AnnonceDoc = {
 
 
 // ---------- POST ----------
-export async function POST(request: NextRequest, ctx: any) {
+export async function POST(request: NextRequest,ctx: { params: Params }) {
   try {
     const db = await getDb();
 
@@ -98,14 +102,8 @@ export async function POST(request: NextRequest, ctx: any) {
           altText: null,
         });
         imageIds.push(res.insertedId);
-      } catch (e: any) {
-        if (e?.code === 11000) {
-          const existing = await db.collection("images").findOne({ imagePath: u.url }, { projection: { _id: 1 } });
-          if (existing?._id) imageIds.push(existing._id);
-          else throw e;
-        } else {
-          throw e;
-        }
+      } catch (e) {
+        console.error("Insert image error:", e);
       }
     }
 
@@ -117,8 +115,8 @@ export async function POST(request: NextRequest, ctx: any) {
     if (links.length) {
       try {
         await db.collection("annonce_images").insertMany(links, { ordered: false });
-      } catch (e: any) {
-        if (e?.code !== 11000) throw e;
+      } catch (e) {
+        console.error("Insert links error:", e);
       }
     }
 
@@ -133,17 +131,17 @@ export async function POST(request: NextRequest, ctx: any) {
       images: uploaded.map((u, i) => ({ url: u.url, isMain: i === mainIndex })),
       firstImagePath: mainUrl,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error("Upload images error:", err);
     return NextResponse.json(
-      { error: "Échec de l’upload des images", details: String(err?.message ?? err) },
+      { error: "Échec de l’upload des images" },
       { status: 500 }
     );
   }
 }
 
 // ---------- GET ----------
-export async function GET(_request: NextRequest, ctx: any) {
+export async function GET(_request: NextRequest, ctx: { params: Params }) {
   try {
     const db = await getDb();
     const { annonceId } = ctx.params as { locale?: string; annonceId: string };
@@ -178,7 +176,7 @@ export async function GET(_request: NextRequest, ctx: any) {
       firstImagePath: annonce.firstImagePath ?? null,
       images,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error("GET images error:", err);
     return NextResponse.json({ error: "Erreur lors de la récupération des images" }, { status: 500 });
   }
@@ -191,8 +189,7 @@ export async function GET(_request: NextRequest, ctx: any) {
 
 // ---------DELETE--------------
 
-
-export async function DELETE(req: NextRequest, ctx: any) {
+export async function DELETE(req: NextRequest, ctx: { params: Params }) {
   try {
     const db = await getDb();
     const { annonceId } = ctx.params as { locale?: string; annonceId: string };
@@ -315,10 +312,10 @@ export async function DELETE(req: NextRequest, ctx: any) {
       haveImage: remainingUrls.length > 0,
       firstImagePath: remainingUrls[0] ?? null,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error("DELETE image error:", err);
     return NextResponse.json(
-      { error: "Échec de la suppression", details: String(err?.message ?? err) },
+      { error: "Échec de la suppression"},
       { status: 500 }
     );
   }

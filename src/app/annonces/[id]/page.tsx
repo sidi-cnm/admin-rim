@@ -30,8 +30,8 @@ export default async function AnnonceDetail({
 
   const annonceDbId = id;
 
-  const modeOptionsApi =
-    process.env.NEXT_PUBLIC_OPTIONS_API_MODE === "tursor" ? "tursor" : "sqlite";
+  // const modeOptionsApi =
+  //   process.env.NEXT_PUBLIC_OPTIONS_API_MODE === "tursor" ? "tursor" : "sqlite";
   const baseApiOptions =  "/api";
   const typeAnnoncesEndpoint = `${baseApiOptions}/options`;
   const categoriesEndpoint = `${baseApiOptions}/options`;

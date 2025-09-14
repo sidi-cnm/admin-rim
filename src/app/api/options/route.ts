@@ -5,7 +5,6 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const parentId = searchParams.get("parentId");
-    const path = searchParams.get("path");
     let rows;
     if (parentId === null) {
       const result = await turso.execute(
@@ -23,6 +22,7 @@ export async function GET(request: NextRequest) {
     }
     return NextResponse.json(rows);
   } catch (error) {
+    console.error("Erreur serveur:", error);
     return new NextResponse("Erreur serveur", { status: 500 });
   }
 }

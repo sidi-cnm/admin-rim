@@ -1,5 +1,4 @@
 // middleware.ts
-import { createI18nMiddleware } from "next-international/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server"; 
 import { getUserFromCookies } from "./utils/getUserFomCookies";
