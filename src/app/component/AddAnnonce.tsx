@@ -12,8 +12,13 @@ type Props = {
   onNext: (payload: {
     typeAnnonceId: string;
     // deviennent optionnels s’ils n’existent pas
-    categorieId?: string;
     subcategorieId?: string;
+    typeAnnonceName?: string;
+    typeAnnonceNameAr?: string;
+    // deviennent optionnels s’ils n’existent pas
+    categorieId?: string;
+    categorieName?: string;
+    categorieNameAr?: string;
     title: string;
     description: string;
     price: number | null;
@@ -32,6 +37,10 @@ type Props = {
     description?: string;
     price?: number | null | undefined;
     contact? : number | null | undefined;
+    typeAnnonceName?: string;
+    typeAnnonceNameAr?: string;
+    categorieName?: string;
+    categorieNameAr?: string;
 
     position?: Position;
     directNegotiation?: boolean | null;
@@ -65,6 +74,11 @@ export default function AddAnnonceStep1({
   const [directNegotiation, setDirectNegotiation] = useState<boolean | null>(
     initial?.directNegotiation ?? null
   );
+
+  const typeObj = typeAnnonces.find(t => String(t.id) === String(selectedTypeId));
+  const catObj  = categories.find(c => String(c.id) === String(selectedCategoryId));
+  const subObj  = filteredSubCategories.find(s => String(s.id) === String(selectedSubCategoryId));
+
 
   // Erreurs champ par champ
   const [errors, setErrors] = useState<{
@@ -179,6 +193,10 @@ export default function AddAnnonceStep1({
       classificationAr,
       contact: contact === "" ? null : Number(contact),
       isSamsar,
+      typeAnnonceName: typeObj?.name,
+      typeAnnonceNameAr: typeObj?.nameAr,
+      categorieName: catObj?.name,
+      categorieNameAr: catObj?.nameAr,
     });
   };
 

@@ -152,6 +152,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const moughataaId = String(form.get("moughataaId") ?? "");
       const status      = String(form.get("status") ?? "active");
 
+
+      const typeAnnonceName = String(form.get("typeAnnonceName") ?? "");
+      const categorieName = String(form.get("categorieName") ?? "");
+      const typeAnnonceNameAr = String(form.get("typeAnnonceNameAr") ?? "");
+      const categorieNameAr = String(form.get("categorieNameAr") ?? "");
+
+
       // files
       const files = [
         ...form.getAll("files"),
@@ -178,6 +185,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         classificationAr,
         title,
         description,
+        typeAnnonceName,
+        categorieName,
+        typeAnnonceNameAr,
+        categorieNameAr,
         price,
         status,
         isPublished: false,

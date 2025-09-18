@@ -27,6 +27,10 @@ type Props = {
     classificationFr?: string;
     classificationAr?: string;
     isSamsar?: boolean;
+    typeAnnonceName?: string;
+    categorieName?: string;
+    typeAnnonceNameAr?: string;
+    categorieNameAr?: string;
   };
 };
 
@@ -157,6 +161,12 @@ export default function AddAnnonceStep3({
       // flags
       fd.append("status", "active");
       fd.append("haveImage", String(files.length > 0));
+
+      if(draft.categorieName) fd.append("categorieName", String(draft.categorieName));
+      if(draft.typeAnnonceName) fd.append("typeAnnonceName", String(draft.typeAnnonceName));
+      if(draft.categorieNameAr) fd.append("categorieNameAr", String(draft.categorieNameAr));
+      if(draft.typeAnnonceNameAr) fd.append("typeAnnonceNameAr", String(draft.typeAnnonceNameAr));
+      
 
       const res = await fetch(createAnnonceEndpoint, {
         method: "POST",

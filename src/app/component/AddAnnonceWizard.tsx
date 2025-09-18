@@ -38,6 +38,11 @@ type Draft = {
   // step 3
   lieuId?: string;        // wilaya
   moughataaId?: string;   // moughataa
+
+  typeAnnonceName?: string;
+  categorieName?: string;
+  typeAnnonceNameAr?: string;
+  categorieNameAr?: string;
 };
 
 export default function AddAnnonceWizard({
@@ -75,6 +80,10 @@ export default function AddAnnonceWizard({
     position: Position;
     directNegotiation?: boolean | null;
     contact?: number | null;
+    typeAnnonceName?: string;
+    categorieName?: string;
+    typeAnnonceNameAr?: string;
+    categorieNameAr?: string;
   }) => {
     setDraft((d) => ({ ...d, ...payload }));
     setStep(2);
@@ -169,6 +178,10 @@ export default function AddAnnonceWizard({
               position: draft.position,
               directNegotiation: draft.directNegotiation ?? null,
               isSamsar: draft.isSamsar,
+              typeAnnonceName: draft.typeAnnonceName,
+              categorieName: draft.categorieName,
+              typeAnnonceNameAr: draft.typeAnnonceNameAr,
+              categorieNameAr: draft.categorieNameAr,
             }}
           />
         )}

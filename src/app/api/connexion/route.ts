@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
 import { getDb } from "../../../lib/mongodb";
+import bcrypt from "bcrypt";
+
 
 export async function POST(request: Request) {
   try {
@@ -29,13 +31,13 @@ export async function POST(request: Request) {
     }
 
     // 2️⃣ Vérifier le mot de passe
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
-    // if (!isPasswordValid) {
-    //   return NextResponse.json(
-    //     { error: "Email ou mot de passe incorrect" },
-    //     { status: 401 }
-    //   );
-    // }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { error: "Email ou mot de passe incorrect" },
+        { status: 401 }
+      );
+    }
 
     // 3️⃣ Expirer les anciennes sessions
     await db.collection("user_sessions").updateMany(
