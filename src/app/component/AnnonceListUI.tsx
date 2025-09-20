@@ -28,22 +28,27 @@ export default function AnnonceListUI({
   const router = useRouter();
   const sp = useSearchParams();
 
-  const publishedParam = sp.get("published") ?? "all";
+  // ✅ valeurs par défaut : published=false, annonceStatus=active
+  const publishedParam = sp.get("published") ?? "false";
   const phoneParam = sp.get("phone") ?? "";
   const startDateParam = sp.get("startDate") ?? "";
   const endDateParam = sp.get("endDate") ?? "";
-  const annonceStatusParam = sp.get("annonceStatus") ?? "all";
+  const annonceStatusParam = sp.get("annonceStatus") ?? "active";
 
-  const showPublished = publishedParam === "all" || publishedParam === "true";
-  const showUnpublished = publishedParam === "all" || publishedParam === "false";
+  const showPublished = publishedParam === "true";
+  const showUnpublished = publishedParam === "false";
 
   const setQuery = (next: Record<string, string | null>) => {
     const q = new URLSearchParams(sp.toString());
+
+    // 🔥 supprimer l'ancien paramètre "status" de l'URL
+    q.delete("status");
+
     Object.entries(next).forEach(([k, v]) => {
       if (v === null || v === "") q.delete(k);
       else q.set(k, v);
     });
-    // Reset pagination quand filtre change
+
     if (
       next.published !== undefined ||
       next.phone !== undefined ||
@@ -53,22 +58,24 @@ export default function AnnonceListUI({
     ) {
       q.set("page", "1");
     }
-    console.log("➡️ New query:", q.toString());
+
     router.push(`?${q.toString()}`);
   };
 
   const handleCheckPublished = (checked: boolean) => {
-    if (checked && showUnpublished) setQuery({ published: "all" });
-    else if (checked && !showUnpublished) setQuery({ published: "true" });
-    else if (!checked && showUnpublished) setQuery({ published: "false" });
-    else setQuery({ published: "all" });
+    if (checked) {
+      setQuery({ published: "true", annonceStatus: "active" });
+    } else {
+      setQuery({ published: "false", annonceStatus: "active" });
+    }
   };
 
   const handleCheckUnpublished = (checked: boolean) => {
-    if (checked && showPublished) setQuery({ published: "all" });
-    else if (checked && !showPublished) setQuery({ published: "false" });
-    else if (!checked && showPublished) setQuery({ published: "true" });
-    else setQuery({ published: "all" });
+    if (checked) {
+      setQuery({ published: "false", annonceStatus: "active" });
+    } else {
+      setQuery({ published: "true", annonceStatus: "active" });
+    }
   };
 
   // Filtrage côté client

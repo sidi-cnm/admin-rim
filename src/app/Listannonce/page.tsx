@@ -24,13 +24,14 @@ export default async function Home({
   const page = Math.max(parseInt((searchParams.page as string) || "1", 10), 1);
   const perPage = 6;
 
-  const publishedParam = ((searchParams.published as string) ?? "all").toLowerCase();
+  // ✅ valeurs par défaut
+  const publishedParam = ((searchParams.published as string) ?? "false").toLowerCase();
   const phoneParam = ((searchParams.phone as string) ?? "").trim();
   const startDateParam = (searchParams.startDate as string) ?? "";
   const endDateParam = (searchParams.endDate as string) ?? "";
-  const annonceStatusParam = ((searchParams.annonceStatus as string) ?? "all").toLowerCase();
+  const annonceStatusParam = ((searchParams.annonceStatus as string) ?? "active").toLowerCase();
 
-  console.log("📌 annonceStatus reçu:", annonceStatusParam);
+  console.log("📌 annonceStatus reçu:", annonceStatusParam, "📌 published:", publishedParam);
 
   const query: Filter<DbAnnonce> = {};
 
