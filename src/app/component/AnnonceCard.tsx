@@ -12,7 +12,7 @@ type Annonce = {
   firstImagePath?: string;
   isPublished: boolean;
   contact?: string;
-  status?: "active" | "deleted";
+  status?: string;
   isSponsored?: boolean;
 };
 
@@ -21,7 +21,7 @@ export default function AnnonceCard({ annonce }: { annonce: Annonce }) {
   const router = useRouter();
 
   const [published, setPublished] = useState(annonce.isPublished);
-  const [status, setStatus] = useState<"active" | "deleted">(annonce.status ?? "active");
+  const [status, setStatus] = useState<string>(annonce.status ?? "active");
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);

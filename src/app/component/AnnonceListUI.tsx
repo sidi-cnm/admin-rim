@@ -12,7 +12,7 @@ type Annonce = {
   firstImagePath?: string;
   isPublished: boolean;
   contact?: string;
-  status?: "active" | "deleted";
+  status?: string;
   createdAt: Date;
 };
 
@@ -32,6 +32,7 @@ export default function AnnonceListUI({
   const phoneParam = sp.get("phone") ?? "";
   const startDateParam = sp.get("startDate") ?? "";
   const endDateParam = sp.get("endDate") ?? "";
+  const annonceStatusParam = sp.get("annonceStatus") ?? "all";
 
   const showPublished = publishedParam === "all" || publishedParam === "true";
   const showUnpublished = publishedParam === "all" || publishedParam === "false";
@@ -42,9 +43,17 @@ export default function AnnonceListUI({
       if (v === null || v === "") q.delete(k);
       else q.set(k, v);
     });
-    if (next.published !== undefined || next.phone !== undefined || next.startDate !== undefined || next.endDate !== undefined) {
+    // Reset pagination quand filtre change
+    if (
+      next.published !== undefined ||
+      next.phone !== undefined ||
+      next.startDate !== undefined ||
+      next.endDate !== undefined ||
+      next.annonceStatus !== undefined
+    ) {
       q.set("page", "1");
     }
+    console.log("➡️ New query:", q.toString());
     router.push(`?${q.toString()}`);
   };
 
@@ -62,19 +71,32 @@ export default function AnnonceListUI({
     else setQuery({ published: "all" });
   };
 
+  // Filtrage côté client
   const filteredAnnonces = useMemo(() => {
     return annonces.filter((a) => {
       if (publishedParam === "true" && !a.isPublished) return false;
       if (publishedParam === "false" && a.isPublished) return false;
-      if (phoneParam.trim() && !(a.contact ?? "").includes(phoneParam.trim())) return false;
-      if (startDateParam && new Date(a.createdAt) < new Date(startDateParam)) return false;
-      if (endDateParam && new Date(a.createdAt) > new Date(endDateParam)) return false;
+      if (annonceStatusParam === "deleted" && a.status !== "deleted") return false;
+      if (annonceStatusParam === "active" && a.status !== "active") return false;
+      if (phoneParam.trim() && !(a.contact ?? "").includes(phoneParam.trim()))
+        return false;
+      if (startDateParam && new Date(a.createdAt) < new Date(startDateParam))
+        return false;
+      if (endDateParam && new Date(a.createdAt) > new Date(endDateParam))
+        return false;
       return true;
     });
-  }, [annonces, publishedParam, phoneParam, startDateParam, endDateParam]);
+  }, [
+    annonces,
+    publishedParam,
+    phoneParam,
+    startDateParam,
+    endDateParam,
+    annonceStatusParam,
+  ]);
 
   const handlAddAnnonce = () => {
-    router.push('/AddAnnonce');
+    router.push("/AddAnnonce");
   };
 
   return (
@@ -104,10 +126,21 @@ export default function AnnonceListUI({
             checked={showUnpublished}
             onChange={(e) => handleCheckUnpublished(e.target.checked)}
           />
-          <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-medium">
+          <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
             Non publié
           </span>
         </label>
+
+        {/* Filtre Statut */}
+        <select
+          value={annonceStatusParam}
+          onChange={(e) => setQuery({ annonceStatus: e.target.value })}
+          className="border text-black rounded-md px-3 py-1 text-sm"
+        >
+          <option value="all">Tous</option>
+          <option value="active">Actifs</option>
+          <option value="deleted">Supprimés</option>
+        </select>
 
         {/* Recherche par téléphone */}
         <input
@@ -147,7 +180,9 @@ export default function AnnonceListUI({
         {filteredAnnonces.length > 0 ? (
           filteredAnnonces.map((a) => <AnnonceCard key={a.id} annonce={a} />)
         ) : (
-          <div className="col-span-full text-center text-gray-500">Aucune annonce trouvée</div>
+          <div className="col-span-full text-center text-gray-500">
+            Aucune annonce trouvée
+          </div>
         )}
       </div>
 

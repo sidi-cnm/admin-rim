@@ -1,8 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import { getDb } from "../../lib/mongodb";
 import AnnonceListUI from "../component/AnnonceListUI";
 import type { Filter } from "mongodb";
 
-// ---- Type qui correspond à la structure en base ----
 type DbAnnonce = {
   _id: { toString(): string };
   title: string;
@@ -10,50 +11,58 @@ type DbAnnonce = {
   contact?: string;
   firstImagePath?: string;
   isPublished?: boolean;
-  status?: "active" | "deleted";
+  status?: string;
   isSponsored: boolean;
   createdAt: Date;
 };
 
-// ---- Composant page ----
 export default async function Home({
-  searchParams,
+  searchParams = {},
 }: {
-  searchParams?: { page?: string; published?: string; phone?: string; startDate?: string; endDate?: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const page = Math.max(parseInt(searchParams?.page || "1", 10), 1);
+  const page = Math.max(parseInt((searchParams.page as string) || "1", 10), 1);
   const perPage = 6;
 
-  // Récupération des filtres depuis l’URL
-  const publishedParam = (searchParams?.published ?? "all").toLowerCase();
-  const phoneParam = (searchParams?.phone ?? "").trim();
-  const startDateParam = searchParams?.startDate ?? "";
-  const endDateParam = searchParams?.endDate ?? "";
+  const publishedParam = ((searchParams.published as string) ?? "all").toLowerCase();
+  const phoneParam = ((searchParams.phone as string) ?? "").trim();
+  const startDateParam = (searchParams.startDate as string) ?? "";
+  const endDateParam = (searchParams.endDate as string) ?? "";
+  const annonceStatusParam = ((searchParams.annonceStatus as string) ?? "all").toLowerCase();
 
-  // ---- Construire le filtre MongoDB ----
+  console.log("📌 annonceStatus reçu:", annonceStatusParam);
+
   const query: Filter<DbAnnonce> = {};
+
+  // Publié / Non publié
   if (publishedParam === "true") query.isPublished = true;
   if (publishedParam === "false") query.isPublished = false;
+
+  // Téléphone
   if (phoneParam) query.contact = { $regex: phoneParam, $options: "i" };
 
-  // ---- Filtre par date ----
+  // Statut
+  if (annonceStatusParam === "deleted") query.status = "deleted";
+  if (annonceStatusParam === "active") query.status = "active";
+
+  // Date
   if (startDateParam || endDateParam) {
     query.createdAt = {};
     if (startDateParam) query.createdAt.$gte = new Date(startDateParam);
     if (endDateParam) query.createdAt.$lte = new Date(endDateParam);
   }
 
-  // ---- Connexion à MongoDB ----
   const db = await getDb();
   const coll = db.collection<DbAnnonce>("annonces");
 
-  // ---- Pagination ----
   const totalCount = await coll.countDocuments(query);
+  console.log("📌 Query:", query, "=> totalCount:", totalCount);
+
   const totalPages = Math.max(Math.ceil(totalCount / perPage), 1);
 
-  // ---- Récupération des annonces ----
-  const annonces = (await coll
+  const annonces = await coll
     .find(query)
+    .sort({ createdAt: -1 })
     .skip((page - 1) * perPage)
     .limit(perPage)
     .project({
@@ -67,9 +76,8 @@ export default async function Home({
       isSponsored: 1,
       createdAt: 1,
     })
-    .toArray()) as DbAnnonce[];
+    .toArray();
 
-  // ---- Transformation pour le front ----
   const annoncesFormatted = annonces.map((a) => ({
     id: a._id.toString(),
     title: a.title,
@@ -82,7 +90,6 @@ export default async function Home({
     createdAt: a.createdAt,
   }));
 
-  // ---- Rendu ----
   return (
     <AnnonceListUI
       annonces={annoncesFormatted}
