@@ -12,6 +12,7 @@ type User = {
   isActive: boolean;
   emailVerified: boolean;
   createdAt: string;
+  contact?: string | null;   // ✅ Ajouté
   lastLogin?: string | null;
 };
 

@@ -37,20 +37,46 @@ export default async function UsersPage({
   const totalCount = await coll.countDocuments(query);
   const totalPages = Math.max(Math.ceil(totalCount / perPage), 1);
 
+  // 📌 On utilise aggregation + lookup
   const users = await coll
-    .find(query)
-    .skip((page - 1) * perPage)
-    .limit(perPage)
-    .project({
-      _id: 1,
-      email: 1,
-      roleName: 1,
-      isActive: 1,
-      emailVerified: 1,
-      createdAt: 1,
-      lastLogin: 1,
-    })
-    .toArray();
+  .aggregate([
+    { $match: query },
+    { $sort: { createdAt: -1 } },
+    { $skip: (page - 1) * perPage },
+    { $limit: perPage },
+    {
+      $addFields: {
+        userIdStr: { $toString: "$_id" }, // 🔑 conversion ObjectId → string
+      },
+    },
+    {
+      $lookup: {
+        from: "contacts",
+        localField: "userIdStr",
+        foreignField: "userId",
+        as: "contacts",
+      },
+    },
+    {
+      $addFields: {
+        contact: { $arrayElemAt: ["$contacts.contact", 0] },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        email: 1,
+        roleName: 1,
+        isActive: 1,
+        emailVerified: 1,
+        createdAt: 1,
+        lastLogin: 1,
+        contact: 1,
+      },
+    },
+  ])
+  .toArray();
+
 
   const usersFormatted = users.map((u) => ({
     id: u._id.toString(),
@@ -58,8 +84,16 @@ export default async function UsersPage({
     roleName: u.roleName,
     isActive: u.isActive,
     emailVerified: u.emailVerified,
-    createdAt: typeof u.createdAt === "string" ? u.createdAt : u.createdAt?.toString() ?? "",
-    lastLogin: u.lastLogin ? (typeof u.lastLogin === "string" ? u.lastLogin : u.lastLogin.toString()) : null,
+    contact: u.contact ?? null,
+    createdAt:
+      typeof u.createdAt === "string"
+        ? u.createdAt
+        : u.createdAt?.toString() ?? "",
+    lastLogin: u.lastLogin
+      ? typeof u.lastLogin === "string"
+        ? u.lastLogin
+        : u.lastLogin.toString()
+      : null,
   }));
 
   return (
@@ -69,7 +103,7 @@ export default async function UsersPage({
       totalPages={totalPages}
       currentPage={page}
       initialEmail={emailParam}
-      initialActive={activeParam} // "true" | "false" | "all"
+      initialActive={activeParam}
     />
   );
 }
