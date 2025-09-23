@@ -125,6 +125,19 @@ export default function UserCard({ user }: { user: User }) {
         </div>
       </div>
 
+        {/* ✅ Date de création */}
+      <div className="flex justify-between">
+        <span className="text-gray-600 font-medium">{"Créé le"} :</span>
+        <span className="text-gray-900">
+          {new Date(user.createdAt).toLocaleDateString("fr-FR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </span>
+      </div>
+
+
       {/* Actions */}
       <div className="mt-4 flex gap-2 justify-end">
         <button

@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname,useRouter } from "next/navigation";
-
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -11,22 +10,81 @@ export default function Sidebar() {
 
   const route = useRouter();
 
-  const handleconnexion = ()=>{
-       route.push('/login');
-  }
+  const handleconnexion = () => {
+    route.push("/login");
+  };
 
-  const handldeconnexion = ()=>{
-    const res = fetch('/api/logout',{
-      method:'POST',
-      headers: { 'Content-Type': 'application/json' },
+  const handldeconnexion = async () => {
+    const res = await fetch("/api/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
     });
 
-    if(!res){
+    if (!res.ok) {
       alert("Erreur de déconnexion");
       return;
     }
-    route.push('/login');
-  }
+    route.push("/login");
+  };
+
+  // ✅ Fonction qui retourne la liste des liens
+  const navLinks = (
+    <>
+      <Link
+        href="/"
+        onClick={() => setOpenMobile(false)}
+        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+          pathname === "/"
+            ? "bg-blue-700 text-blue-200"
+            : "hover:bg-blue-600 text-white"
+        }`}
+      >
+        <span className="truncate">Home</span>
+      </Link>
+
+      <Link
+        href="/Listannonce"
+        onClick={() => setOpenMobile(false)}
+        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+          pathname?.startsWith("/Listannonce")
+            ? "bg-blue-700 text-blue-200"
+            : "hover:bg-blue-600 text-white"
+        }`}
+      >
+        <span className="truncate">Annonces</span>
+      </Link>
+
+      <Link
+        href="/users"
+        onClick={() => setOpenMobile(false)}
+        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
+          pathname?.startsWith("/users")
+            ? "bg-blue-700 text-blue-200"
+            : "hover:bg-blue-600 text-white"
+        }`}
+      >
+        <span className="truncate">Users</span>
+      </Link>
+    </>
+  );
+
+  // ✅ Fonction qui retourne la section Connexion/Déconnexion
+  const authButtons = (
+    <div className="p-4 border-t border-blue-700 space-y-2">
+      <button
+        onClick={handleconnexion}
+        className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded-lg"
+      >
+        Connexion
+      </button>
+      <button
+        onClick={handldeconnexion}
+        className="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg"
+      >
+        Déconnexion
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -46,52 +104,10 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-2 space-y-1">
-
-        <Link
-            href="/"
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
-              pathname?.startsWith("/annonces")
-                ? "bg-blue-700 text-blue-200"
-                : "hover:bg-blue-600 text-white"
-            }`}
-          >
-            <span className="truncate">Home</span>
-          </Link>
-
-
-          <Link
-            href="/Listannonce"
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
-              pathname?.startsWith("/annonces")
-                ? "bg-blue-700 text-blue-200"
-                : "hover:bg-blue-600 text-white"
-            }`}
-          >
-            <span className="truncate">Annonces</span>
-          </Link>
-
-          <Link
-            href="/users"
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
-              pathname?.startsWith("/users")
-                ? "bg-blue-700 text-blue-200"
-                : "hover:bg-blue-600 text-white"
-            }`}
-          >
-            <span className="truncate">Users</span>
-          </Link>
-        </nav>
+        <nav className="flex-1 overflow-y-auto p-2 space-y-1">{navLinks}</nav>
 
         {/* Section Login/Logout */}
-        <div className="p-4 border-t border-blue-700 space-y-2">
-          <button onClick={handleconnexion} className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded-lg">
-            Connexion
-          </button>
-          <button onClick={handldeconnexion} className="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg">
-            Déconnexion
-          </button>
-        </div>
+        {authButtons}
       </aside>
 
       {/* BUTTON mobile */}
@@ -110,7 +126,7 @@ export default function Sidebar() {
         }`}
       >
         <div className="h-16 flex items-center justify-between px-4 border-b border-blue-700">
-          <span className="font-semibold text-lg truncate">RIM-EBAY</span>
+          <span className="font-semibold text-lg truncate">RIM EBAY</span>
           <button
             onClick={() => setOpenMobile(false)}
             className="rounded-lg px-3 py-2 text-sm hover:bg-blue-600"
@@ -120,29 +136,10 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <nav className="p-2 space-y-1">
-          <Link
-            href="/annonces"
-            onClick={() => setOpenMobile(false)}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition ${
-              pathname?.startsWith("/annonces")
-                ? "bg-blue-700 text-blue-200"
-                : "hover:bg-blue-600 text-white"
-            }`}
-          >
-            <span className="truncate">LIST</span>
-          </Link>
-        </nav>
+        <nav className="p-2 space-y-1">{navLinks}</nav>
 
         {/* Section Login/Logout mobile */}
-        <div className="p-4 border-t border-blue-700 space-y-2">
-          <button className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded-lg">
-            Connexion
-          </button>
-          <button className="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg">
-            Déconnexion
-          </button>
-        </div>
+        {authButtons}
       </aside>
     </>
   );
