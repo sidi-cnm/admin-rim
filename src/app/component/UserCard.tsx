@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type User = {
   id: string;
@@ -8,7 +9,7 @@ type User = {
   roleName: string;
   isActive: boolean;
   emailVerified: boolean;
-  contact?: string | null;   // ✅ Ajouté
+  contact?: string | null;
   createdAt: string;
   lastLogin?: string | null;
 };
@@ -82,10 +83,12 @@ export default function UserCard({ user }: { user: User }) {
         </div>
       )}
 
-      {/* Email */}
-      <h3 className="text-base font-semibold text-gray-900 mb-3">
-        {user.email}
-      </h3>
+      {/* Email cliquable */}
+      <Link href={`/users/${user.id}`}>
+        <h3 className="text-base font-semibold text-blue-700 hover:underline mb-3">
+          {user.email}
+        </h3>
+      </Link>
 
       {/* Infos */}
       <div className="space-y-2 text-sm">
@@ -116,27 +119,22 @@ export default function UserCard({ user }: { user: User }) {
           )}
         </div>
 
-        {/* ✅ Nouveau bloc Contact */}
         <div className="flex justify-between">
           <span className="text-gray-600 font-medium">{"Contact"} :</span>
+          <span className="text-gray-900">{user.contact ?? "Non défini"}</span>
+        </div>
+
+        <div className="flex justify-between">
+          <span className="text-gray-600 font-medium">{"Créé le"} :</span>
           <span className="text-gray-900">
-            {user.contact ?? "Non défini"}
+            {new Date(user.createdAt).toLocaleDateString("fr-FR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </span>
         </div>
       </div>
-
-        {/* ✅ Date de création */}
-      <div className="flex justify-between">
-        <span className="text-gray-600 font-medium">{"Créé le"} :</span>
-        <span className="text-gray-900">
-          {new Date(user.createdAt).toLocaleDateString("fr-FR", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </span>
-      </div>
-
 
       {/* Actions */}
       <div className="mt-4 flex gap-2 justify-end">
